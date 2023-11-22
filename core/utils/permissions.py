@@ -13,3 +13,7 @@ class IsAdminOrReadOnly(BasePermission):
 
         # Comprueba si el usuario es administrador
         return request.user and request.user.is_staff
+
+class IsAdminUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.rol == 'Jugador'

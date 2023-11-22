@@ -1,17 +1,22 @@
 from rest_framework import serializers
-from .models import Jugador, Torneo, Partido
+from .models import Jugador, Torneo, Inscripcion, Partido
 
 class JugadorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Jugador
-        fields = ['id', 'usuario', 'ranking', 'estadisticas']
+        fields = '__all__'
 
 class TorneoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Torneo
-        fields = ['id', 'nombre', 'ubicacion', 'fecha_inicio', 'fecha_fin', 'jugadores']
+        fields = '__all__'
+
+class InscripcionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Inscripcion
+        fields = '__all__'
 
 class PartidoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Partido
-        fields = ['id', 'torneo', 'jugador1', 'jugador2', 'ganador', 'fecha', 'resultado']
+        fields = '__all__'
