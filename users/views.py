@@ -37,17 +37,24 @@ class LoginView(APIView):
 
         response = Response()
 
-        response.set_cookie(key='jwt', value=token, httponly=True)
+        response.set_cookie(key='token', value=token, httponly=True)
 
         response.data = {
-            'jwt': token
+            'token': token,
+            'user': {
+                'name': user.name,
+                'username': user.username,
+                'rol': user.rol
+            }
         }
+
+        print(response.data)
         
         return response
     
 class UserView(APIView):
     def get(self, request):
-        token = request.COOKIES.get('jwt')
+        token = request.COOKIES.get('token')
 
         if not token:
             raise AuthenticationFailed('No estas autenticado')
@@ -66,7 +73,7 @@ class LogoutView(APIView):
 
     def post(self, request):
         response = Response()
-        response.delete_cookie('jwt')
+        response.delete_cookie('token')
         response.data = {
             "message": "Success"
         }
