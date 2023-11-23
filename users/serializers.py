@@ -20,6 +20,11 @@ class UserSerializer(serializers.ModelSerializer):
         instance = self.Meta.model(**validated_data)
         if password is not None:
             instance.set_password(password)
-        instance.rol = Rol.objects.get_or_create(id=2)[0] # Asegúrate que el rol con id=2 exista
+        instance.rol = Rol.objects.get_or_create(id=2)[0]
         instance.save()
         return instance
+
+class JugadorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'ranking', 'estadisticas']

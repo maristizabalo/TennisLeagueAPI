@@ -1,6 +1,6 @@
 from os import name
 from rest_framework.views import APIView
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, JugadorSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from .models import User
@@ -80,4 +80,28 @@ class LogoutView(APIView):
 
         return response
 
+class ListaJugadoresView(APIView):
+    def get(self, request):
+        token = request.COOKIES.get('token')
+        if not token:
+            raise AuthenticationFailed('No estas autenticado')
 
+        # Se filtran los usuarios con rol de jugador (rol_id=2) el cual es de jugador
+        jugadores = User.objects.filter(rol=2)
+        serializer = JugadorSerializer(jugadores, many=True)
+
+        return Response(serializer.data)
+
+class DetalleJugadorView(APIView):
+    def get(self, request, pk):
+        token = request.COOKIES.get('token')
+        if not token:
+            raise AuthenticationFailed('No estas autenticado')
+
+        try:
+            jugador = User.objects.get(id=pk, rol=2)
+        except User.DoesNotExist:
+            return Response({'error': 'Jugador no encontrado'}, status=404)
+
+        serializer = JugadorSerializer(jugador)
+        return Response(serializer.data)

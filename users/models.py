@@ -20,6 +20,8 @@ class User(AbstractUser):
     username = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
     rol = models.ForeignKey(Rol, on_delete=models.SET_NULL, null=True, blank=True, related_name='usuarios', default=2)
+    ranking = models.IntegerField(null=True, blank=True)
+    estadisticas = models.CharField(max_length=255, null=True, blank=True) 
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []

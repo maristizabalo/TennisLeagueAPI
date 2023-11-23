@@ -1,15 +1,13 @@
 from rest_framework import generics
-from .models import Jugador, Torneo, Partido
-from .serializers import JugadorSerializer, TorneoSerializer, PartidoSerializer
+from .models import Torneo, Partido
+from .serializers import TorneoSerializer, PartidoSerializer
 
-# Vistas para Jugador
-class ListaJugadores(generics.ListCreateAPIView):
-    queryset = Jugador.objects.all()
-    serializer_class = JugadorSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.exceptions import AuthenticationFailed
+from .models import User
+import jwt
 
-class DetalleJugador(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Jugador.objects.all()
-    serializer_class = JugadorSerializer
 
 # Vistas para Torneo
 class ListaTorneos(generics.ListCreateAPIView):
