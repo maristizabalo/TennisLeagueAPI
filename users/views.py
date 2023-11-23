@@ -1,3 +1,4 @@
+from os import name
 from rest_framework.views import APIView
 from users.serializers import UserSerializer
 from rest_framework.response import Response
@@ -22,10 +23,10 @@ class LoginView(APIView):
 
         user = User.objects.filter(username=username).first()
         if user is None:
-            raise AuthenticationFailed('Usuario no encontrado!')
+            return Response({"error": "Usuario no encontrado!"}, status=401)
         
         if not user.check_password(password):
-            raise AuthenticationFailed('Contraseña incorreta!')
+            return Response({"error": "Contraseña incorrecta!"}, status=401)
         
         payload = {
             'id': user.id,
@@ -37,17 +38,23 @@ class LoginView(APIView):
 
         response = Response()
 
-        response.set_cookie(key='jwt', value=token, httponly=True)
+        response.set_cookie(key='token', value=token, httponly=True)
 
         response.data = {
-            'jwt': token
+            'token': token,
+            'user': {
+                "id": user.id,
+                "name": user.name,
+                "username": user.username,
+                "rol": user.rol.id
+            }
         }
         
         return response
     
 class UserView(APIView):
     def get(self, request):
-        token = request.COOKIES.get('jwt')
+        token = request.COOKIES.get('token')
 
         if not token:
             raise AuthenticationFailed('No estas autenticado')
@@ -66,7 +73,7 @@ class LogoutView(APIView):
 
     def post(self, request):
         response = Response()
-        response.delete_cookie('jwt')
+        response.delete_cookie('token')
         response.data = {
             "message": "Success"
         }
